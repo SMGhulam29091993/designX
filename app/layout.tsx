@@ -1,9 +1,8 @@
-import type { Metadata } from "next";
-import { Jost, Geist } from "next/font/google";
-import "./globals.css";
-import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
+import type { Metadata } from "next";
+import { Geist, Jost } from "next/font/google";
 import { Toaster } from "sonner";
+import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -12,9 +11,9 @@ const jostSans = Jost({
 });
 
 export const metadata: Metadata = {
-  title: "DesignX - A design system for everyone",
+  title: "DesignX - AI design assisstant for everyone",
   description:
-    "DesignX is a design system for everyone. It is a collection of reusable components, guided by clear standards, that can be assembled together to build any number of applications.",
+    "DesignX is an AI design assisstant for everyone. It is a collection of reusable components, guided by clear standards, that can be assembled together to build any number of applications.",
 };
 
 export default function RootLayout({
