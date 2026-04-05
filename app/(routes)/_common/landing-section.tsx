@@ -4,9 +4,20 @@ import { useState } from "react";
 import Header from "./header";
 import PromptInput from "@/components/prompt-input";
 import { Suggestion, Suggestions } from "@/components/ai-elements/suggestion";
+import { useCreateProject, useGetProjects } from "@/features/use-projects";
+import { toast } from "sonner";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { Spinner } from "@/components/ui/spinner";
 
 const LandingSection = () => {
+  const { user } = useKindeBrowserClient();
+
   const [promptText, setPromptText] = useState<string>("");
+  const userId = user?.id || "";
+
+  const { data: projects, isLoading, isError } = useGetProjects(userId);
+
+  const { mutate, isPending } = useCreateProject();
 
   const suggestions = [
     {
@@ -104,6 +115,14 @@ const LandingSection = () => {
   const handleSuggestionClick = (value: string) => {
     setPromptText(value);
   };
+
+  const handleSubmit = () => {
+    if (!promptText.trim()) {
+      toast.error("Please enter a prompt to generate a design.");
+      return;
+    }
+    mutate(promptText);
+  };
   return (
     <>
       <div className="w-full min-h-screen">
@@ -126,8 +145,8 @@ const LandingSection = () => {
                     className="ring-2 ring-primary"
                     promptText={promptText}
                     setPromptText={setPromptText}
-                    isLoading={false}
-                    onSubmit={() => {}}
+                    isLoading={isPending}
+                    onSubmit={handleSubmit}
                   />
                 </div>
                 <div className="flex flex-wrap justify-center gap-2 px-5">
@@ -154,9 +173,22 @@ const LandingSection = () => {
           </div>
           <div className="w-full py-10">
             <div className="mx-auto max-w-3xl">
-              <div>
-                <h1 className="font-medium text-xl tracking-tight">Recent Projects</h1>
-              </div>
+              {userId && (
+                <div>
+                  <h1 className="font-medium text-xl tracking-tight">Recent Projects</h1>
+                  {isLoading ? (
+                    <div className="flex items-center justify-center py-2">
+                      <Spinner />
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-3">
+                      {projects?.map((project)=>{
+                        
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
